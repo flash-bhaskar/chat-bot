@@ -1,9 +1,7 @@
 package com.arraigntech.chat.controller;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,14 +31,13 @@ public class ChatController {
 	@MessageMapping("/hello")
 	@SendTo("/topic/message")
 	public Message greeting(InputString message, SimpMessageHeaderAccessor  headerAccessor) throws Exception {
-		return getMessage(message, headerAccessor);
+		return getMessage(message, headerAccessor.getSessionId());
 	}
 
-	public Message getMessage(InputString message, SimpMessageHeaderAccessor  headerAccessor) {
-		String sessionId = headerAccessor.getSessionId();
-		Set<String> inputSet = new HashSet<String>(Arrays.asList(message.getMessage().split(" ")));
+	public Message getMessage(InputString message, String  sessionId) {
+		Set<String> inputSet = new HashSet<String>(Arrays.asList(message.getMessage().toLowerCase().split(" ")));
 		for(Map.Entry<String, String> da : data.entrySet()) {
-			Set<String> keyString = new HashSet<String>(Arrays.asList(da.getKey().split(" ")));
+			Set<String> keyString = new HashSet<String>(Arrays.asList(da.getKey().toLowerCase().split(" ")));
 			if(keyString.containsAll(inputSet)) {
 				if(inputSet.contains("question")) {
 					List<Integer> numbers = generateRandomNumbers();
